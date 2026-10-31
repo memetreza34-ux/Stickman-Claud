@@ -40,10 +40,11 @@ const resolveKeys = (keys: Keyframe[]): Resolved[] => {
 
 const BLEND = 0.3;
 
-export const Actor: React.FC<{ actor: ActorDef; theme: Theme; seed: number }> = ({
+export const Actor: React.FC<{ actor: ActorDef; theme: Theme; seed: number; shadow?: number }> = ({
   actor,
   theme,
   seed,
+  shadow = 0.22,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -97,9 +98,13 @@ export const Actor: React.FC<{ actor: ActorDef; theme: Theme; seed: number }> = 
     if (t >= kj.at && t < end) bubble = { text: kj.say, from: kj.at };
   }
 
+  // 0 = Blase rechts von der Figur, 1 = links davon; dazwischen gleitend
+  const side = interpolate(px, [W * 0.15, W * 0.85], [0.08, 0.92], clamp);
+
   return (
     <AbsoluteFill>
       <svg width={W} height={H} style={{ position: "absolute", overflow: "visible" }}>
+        {shadow > 0 ? <ellipse cx={px} cy={py} rx={42 * scale} ry={8 * scale} fill="#000" opacity={shadow} /> : null}
         <g transform={`translate(${px} ${py}) scale(${facing === "left" ? -scale : scale} ${scale})`}>
           <Stickman
             pose={pose}
@@ -118,13 +123,14 @@ export const Actor: React.FC<{ actor: ActorDef; theme: Theme; seed: number }> = 
           style={{
             position: "absolute",
             left: px,
+            // Blase rückt zur Bildmitte, damit sie auch bei näherer Kamera ganz sichtbar bleibt
             bottom: H - py + (STICKMAN_HEIGHT + 25 + 48 * ((look.headSize ?? 1) - 1) + (look.hat && look.hat !== "none" ? 25 : 0)) * scale,
-            translate: "-50% 0",
+            translate: `${-side * 100}% 0`,
             scale: interpolate(t, [bubble.from, bubble.from + 0.25], [0.4, 1], {
               ...clamp,
               easing: Easing.bezier(0.34, 1.56, 0.64, 1),
             }),
-            transformOrigin: "50% 100%",
+            transformOrigin: `${side * 100}% 100%`,
             background: "#fff",
             color: "#111",
             border: "5px solid #111",
@@ -142,7 +148,7 @@ export const Actor: React.FC<{ actor: ActorDef; theme: Theme; seed: number }> = 
           <div
             style={{
               position: "absolute",
-              left: "50%",
+              left: `${side * 100}%`,
               bottom: -26 * font,
               width: 0,
               height: 0,

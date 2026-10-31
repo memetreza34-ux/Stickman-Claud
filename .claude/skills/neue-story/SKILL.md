@@ -30,6 +30,10 @@ Genre-Regeln:
 | Liebe | `liebe` | park, bus, cafe, beach (sunset), city | hearts, sparkles, rain · chime, pop, ding | warm, einfach, ein Satz Pointe |
 | Comedy | `comedy` | alle hellen Welten | confetti · boom, pop, whoosh | Timing, Überraschung, Sprechblasen |
 
+Stil: Standard ist `sketch` (Tusche auf Papier, farbige Figuren). Nur auf Wunsch `style: "flat"` oder `"cinematic"`.
+Im Sketch-Stil leben Szenen von farbigen Figuren und Requisiten vor grauer Welt – Farbe gezielt
+für das Wichtige einsetzen (Kleidung, Gegenstände, Akzent-Requisiten mit `color`).
+
 Untertitel = was der Erzähler sagt. Pro Untertitel ein kurzer Satz (max. ~12 Wörter).
 Dialoge als Sprechblasen (`say`) an der Figur, nicht als Untertitel.
 

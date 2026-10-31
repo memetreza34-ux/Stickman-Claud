@@ -74,6 +74,15 @@ Nach jeder Text-Änderung in einer Story: `npm run audio` laufen lassen.
 
 `x` ist in Prozent der Breite. Zwischen zwei Keyframes läuft der Stickman automatisch von A nach B.
 
+## Stil
+
+Standard ist **sketch**: Die Welt wird zur Tuschezeichnung auf Papier (bei Nacht: Kreide auf Schwarz),
+die Figuren bleiben farbig. Die Linien wackeln leicht wie handgezeichnet, die Kamera driftet langsam,
+die Untertitel sind handgeschrieben.
+
+Andere Stile pro Story: `style: "flat"` (glatte Vektorgrafik) oder `style: "cinematic"`
+(unscharfer Hintergrund, Spotlicht, Farbstimmung). Einstellungen: `src/engine/styles.tsx`.
+
 ## Figuren
 
 Jede Figur bekommt ein Aussehen: fertig (`look: "hexe"`) oder selbst gebaut.

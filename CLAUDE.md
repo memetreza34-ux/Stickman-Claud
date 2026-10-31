@@ -16,7 +16,7 @@ npx remotion render <Story-ID> out/<ID>.mp4
 ## Aufbau
 
 - `src/stories/*.ts` – Storys (nur Daten, Typ `StoryDef`), eingetragen in `src/stories/index.ts`
-- `src/engine/` – Szenen, Untertitel, Effekte, Themes; `prepare.ts` passt Timing an die Sprachaufnahmen an
+- `src/engine/` – Szenen, Untertitel, Effekte, Themes; `prepare.ts` passt Timing an die Sprachaufnahmen an; `styles.tsx` = Look (Standard `sketch`)
 - `src/stickman/` – Figur (`Stickman.tsx`), Posen (`poses.ts`), Aussehen (`looks.ts`, `Outfit.tsx`)
 - `src/worlds/` – Welten (`worlds.tsx`) und Requisiten (`props.tsx`)
 - `src/audio/` – Sound-Namen, Sprecher-Rollen, `manifest.generated.ts` (vom Audio-Skript erzeugt, nicht von Hand ändern)

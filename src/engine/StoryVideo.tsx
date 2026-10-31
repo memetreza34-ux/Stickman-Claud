@@ -62,7 +62,7 @@ export const StoryVideo: React.FC<{ story: PreparedStory }> = ({ story }) => {
               />
             ) : null}
             <TransitionSeries.Sequence durationInFrames={Math.round(scene.duration * fps)} name={scene.name}>
-              <Scene scene={scene} theme={theme} />
+              <Scene scene={scene} theme={theme} style={story.style ?? "sketch"} />
             </TransitionSeries.Sequence>
           </React.Fragment>
         ))}

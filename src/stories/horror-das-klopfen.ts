@@ -74,7 +74,7 @@ export const dasKlopfen: StoryDef = {
       name: "Erkenntnis",
       duration: 4.5,
       background: "room",
-      zoom: [1, 1.9],
+      zoom: [1, 1.6],
       focus: [55, 48],
       effects: ["redPulse"],
       sfx: [0, 0.8, 1.6, 2.4, 3.2].map((at) => ({ at, sound: "heartbeat" as const })),

@@ -2,6 +2,7 @@ import type { MusicName, SfxName, VoiceRole } from "../audio/sounds";
 import type { Emotion, HandItem } from "../stickman/Stickman";
 import type { PoseName } from "../stickman/poses";
 import type { ThemeName } from "./themes";
+import type { StyleName } from "./styles";
 import type { Look, LookName } from "../stickman/looks";
 import type { PropDef } from "../worlds/props";
 import type { TimeOfDay, WorldName } from "../worlds/worlds";
@@ -83,6 +84,7 @@ export type StoryDef = {
   title: string;
   theme: ThemeName;
   format: "short" | "long";
+  style?: StyleName; // Look: sketch (Standard), flat, cinematic
   narrator?: VoiceRole; // Standard: "erzaehler"
   cast?: Record<string, LookName | Look>; // Aussehen pro Figuren-id, gilt in allen Szenen
   music?: MusicName | "none"; // Standard: passend zum Theme
