@@ -36,14 +36,17 @@ export const prepareStory = (story: StoryDef): PreparedStory => {
     let end = 0;
 
     let cursor = 0;
-    const captions = (scene.captions ?? []).map((c, i) => {
+    const raw = scene.captions ?? [];
+    const captions = raw.map((c, i) => {
       const clip = c.voice === false ? undefined : clips[captionKey(s, i)];
       const at = Math.max(c.at, cursor);
       if (!clip) return { ...c, at };
       voice.push({ at, file: clip.file, volume: 1, duration: clip.duration });
       cursor = at + clip.duration + 0.25;
       end = Math.max(end, cursor);
-      return { ...c, at };
+      // Letzter gesprochener Untertitel verschwindet kurz nach dem Satz
+      const last = i === raw.length - 1;
+      return { ...c, at, dur: c.dur ?? (last ? clip.duration + 1.2 : undefined) };
     });
 
     const actors = (scene.actors ?? []).map((actor) => ({

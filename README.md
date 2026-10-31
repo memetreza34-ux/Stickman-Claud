@@ -8,6 +8,8 @@ Eine Story ist nur eine Datendatei. Die Engine macht daraus ein fertiges Video.
 ```bash
 npm i
 npm run dev        # Remotion Studio (Vorschau)
+npm run check      # TypeScript prüfen
+npm run sheet -- Horror-DasKlopfen   # 12 Standbilder als Übersicht → out/sheets/
 npx remotion render Horror-DasKlopfen out/klopfen.mp4
 ```
 
@@ -127,6 +129,15 @@ chair, bed, door, bookshelf, plant, tv, computer, campfire, crate, ufo, sofa, fr
 | **Gesichter** | neutral, happy, sad, scared, shocked, angry, love, thinking, crying, creepy, sleep |
 | **Gegenstände** (`item`) | phone, flower, flashlight, candle, heart |
 | **Effekte** | rain, flicker, lightning, fog, hearts, redPulse, sparkles, thoughts, snow, bubbles, bats, confetti, embers |
+
+## Mit Claude Code arbeiten
+
+Das Repo bringt eigene Skills mit (`.claude/skills/`), die Claude automatisch nutzt:
+
+- **neue-story**: aus einer Idee eine fertige Story machen, mit Skript, Figuren, Welten, Ton und Prüfbild
+- **engine-erweitern**: neue Figuren, Welten, Requisiten, Posen, Effekte und Sounds bauen
+
+Projektwissen für Claude steht in `CLAUDE.md`.
 
 ## Struktur
 

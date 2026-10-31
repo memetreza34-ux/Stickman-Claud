@@ -9,9 +9,11 @@
   },
   "private": true,
   "dependencies": {
+    "@remotion/bundler": "4.0.539",
     "@remotion/cli": "4.0.539",
     "@remotion/google-fonts": "4.0.539",
     "@remotion/media": "4.0.539",
+    "@remotion/renderer": "4.0.539",
     "@remotion/transitions": "4.0.539",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -31,7 +33,9 @@
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc",
-    "audio": "tsx scripts/generate-audio.mts"
+    "audio": "tsx scripts/generate-audio.mts",
+    "sheet": "tsx scripts/sheet.mts",
+    "check": "tsc --noEmit"
   },
   "allowScripts": {
     "esbuild": false
