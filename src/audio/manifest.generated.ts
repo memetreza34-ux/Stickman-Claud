@@ -33,6 +33,53 @@ export const VOICE_MANIFEST: Record<string, Record<string, VoiceClip>> = {
       "hash": "7570e6810986"
     }
   },
+  "Horror-DieLetzteUBahn": {
+    "s1-c0": {
+      "file": "voice/Horror-DieLetzteUBahn/s1-c0.wav",
+      "duration": 2.96,
+      "hash": "e44b7fd48edf"
+    },
+    "s1-c1": {
+      "file": "voice/Horror-DieLetzteUBahn/s1-c1.wav",
+      "duration": 1.28,
+      "hash": "0d2e8c4100c9"
+    },
+    "s2-c0": {
+      "file": "voice/Horror-DieLetzteUBahn/s2-c0.wav",
+      "duration": 0.76,
+      "hash": "d321f07db43d"
+    },
+    "s3-c0": {
+      "file": "voice/Horror-DieLetzteUBahn/s3-c0.wav",
+      "duration": 0.8,
+      "hash": "ecb2b2cd5773"
+    },
+    "s3-fremder-1": {
+      "file": "voice/Horror-DieLetzteUBahn/s3-fremder-1.wav",
+      "duration": 4.47,
+      "hash": "26df1d3095b7"
+    },
+    "s4-c0": {
+      "file": "voice/Horror-DieLetzteUBahn/s4-c0.wav",
+      "duration": 3.1,
+      "hash": "e2fa154564fd"
+    },
+    "s5-c0": {
+      "file": "voice/Horror-DieLetzteUBahn/s5-c0.wav",
+      "duration": 2.39,
+      "hash": "53da826520a3"
+    },
+    "s5-c1": {
+      "file": "voice/Horror-DieLetzteUBahn/s5-c1.wav",
+      "duration": 1.67,
+      "hash": "e0e3eb252dd8"
+    },
+    "s6-c0": {
+      "file": "voice/Horror-DieLetzteUBahn/s6-c0.wav",
+      "duration": 3.05,
+      "hash": "7d93dca2540d"
+    }
+  },
   "Psycho-SpotlightEffekt": {
     "s1-c0": {
       "file": "voice/Psycho-SpotlightEffekt/s1-c0.wav",
@@ -111,5 +158,6 @@ export const VOICE_MANIFEST: Record<string, Record<string, VoiceClip>> = {
       "duration": 1.9,
       "hash": "0ca582f6db74"
     }
-  }
+  },
+  "Demo-WeltenTour": {}
 };
