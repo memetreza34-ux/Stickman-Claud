@@ -6,6 +6,7 @@ const zuschauer = (n: number): ActorDef[] =>
     return {
       id: `z${i}`,
       size: 0.6,
+      look: (["teen", "nerd", "oma", "boss", "sportler", "rocker"] as const)[i % 6],
       keys: [{ at: 0, x, pose: i % 2 ? "point" : "stand", emotion: "angry", facing: x < 50 ? "right" : "left" }],
     };
   });
@@ -15,6 +16,7 @@ export const spotlightEffekt: StoryDef = {
   title: "Der Spotlight-Effekt",
   theme: "psychologie",
   format: "short",
+  cast: { du: "held", a: "schueler", b: "boss", c: "oma" },
   scenes: [
     {
       name: "Hook",
@@ -62,7 +64,7 @@ export const spotlightEffekt: StoryDef = {
       name: "Realität",
       duration: 5,
       sfx: [{ at: 0, sound: "pop" }],
-      background: "street",
+      background: "city",
       actors: [
         { id: "du", keys: [{ at: 0, x: 45, pose: "shrug", emotion: "thinking" }] },
         { id: "a", size: 0.9, keys: [{ at: 0, x: 95, pose: "walk", item: "phone" }, { at: 5, x: 60, pose: "walk" }] },

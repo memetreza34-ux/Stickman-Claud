@@ -72,23 +72,70 @@ Nach jeder Text-Änderung in einer Story: `npm run audio` laufen lassen.
 
 `x` ist in Prozent der Breite. Zwischen zwei Keyframes läuft der Stickman automatisch von A nach B.
 
-## Bausteine
+## Figuren
+
+Jede Figur bekommt ein Aussehen: fertig (`look: "hexe"`) oder selbst gebaut.
+Für die ganze Story auf einmal: `cast` in der Story.
+
+```ts
+cast: {
+  ich: "teen",                                   // fertige Figur
+  oma: { hair: "bun", hairColor: "#ccc", glasses: "round", top: "dress", topColor: "#7048e8" },
+},
+```
+
+**Fertige Figuren:** klassisch, held, heldin, kind, maedchen, teen, oma, opa, nerd, boss, arzt, polizist,
+koch, lehrer, rocker, sportler, koenig, koenigin, ritter, pirat, ninja, superheld, hexe, vampir, zombie,
+geist, monster, teufel, engel, alien, roboter, astronaut, cowboy, party, schueler
+
+**Selbst bauen** (`src/stickman/looks.ts`):
+
+| | Optionen |
+|---|---|
+| hair | short, spiky, long, ponytail, bun, curly, mohawk, afro, slick |
+| hat | cap, tophat, beanie, witch, crown, cowboy, chef, party, helmet, space, halo, horns, hood, pirate, antenna, headband |
+| glasses | round, square, sun, eyepatch |
+| beard | stubble, full, mustache |
+| top | shirt, tshirt, hoodie, suit, dress, labcoat, robe, armor |
+| bottom | pants, shorts, skirt |
+| extra | tie, bowtie, scarf, backpack, wings, tail |
+| sonst | `cape` (Farbe), `mask`, `head` (round/square/oval), `body: "ghost"`, `height`, `headSize`, `skin`, `color` |
+
+Alle Figuren auf einen Blick: Komposition **Figuren-Galerie** im Studio.
+
+## Welten
+
+`background` einer Szene. Mit `time: "day" | "night" | "sunset"` (Standard: nach Theme).
+
+**Welten:** city, rooftop, livingroom, kitchen, school, office, hospital, cafe, library, stage, castle,
+beach, desert, mountains, jungle, farm, space, underwater, cave, subway, hauntedHouse, graveyard
+
+**Stimmungs-Räume** (Farben vom Theme): void, room, bedroom, street, forest, park, bus
+
+Alle Welten im Video: Story **Demo-WeltenTour**.
+
+**Requisiten** frei platzieren: `props: [{ type: "tree", x: 20 }, { type: "sign", x: 70, text: "Ausgang" }]`
+(tree, pine, palm, deadTree, bush, rock, cactus, lamp, bench, house, car, tombstone, fence, sign, table,
+chair, bed, door, bookshelf, plant, tv, computer, campfire, crate, ufo, sofa, fridge, throne, torch, mic, umbrella).
+`front: true` stellt sie vor die Figuren.
+
+## Weitere Bausteine
 
 | | Optionen |
 |---|---|
 | **Posen** | stand, walk, run, sneak, wave, point, cheer, scared, sad, cry, think, angry, shrug, holdHead, phone, hug, holdHand, sit, sitSad, crouch, stumble, lie |
 | **Gesichter** | neutral, happy, sad, scared, shocked, angry, love, thinking, crying, creepy, sleep |
 | **Gegenstände** (`item`) | phone, flower, flashlight, candle, heart |
-| **Hintergründe** | void, room, bedroom, street, forest, park, bus |
-| **Effekte** | rain, flicker, lightning, fog, hearts, redPulse, sparkles, thoughts |
-
-Alle Posen und Gesichter auf einen Blick: Komposition **Posen-Uebersicht** im Studio.
+| **Effekte** | rain, flicker, lightning, fog, hearts, redPulse, sparkles, thoughts, snow, bubbles, bats, confetti, embers |
 
 ## Struktur
 
 ```
 src/
-  stickman/   Figur, Posen, Gesichter
-  engine/     Szenen, Hintergründe, Effekte, Themes, Untertitel
+  stickman/   Figur, Posen, Gesichter, Aussehen (looks.ts, Outfit.tsx)
+  worlds/     Welten und Requisiten
+  engine/     Szenen, Effekte, Themes, Untertitel, Timing
+  audio/      Sound-Namen, Sprecher-Rollen, erzeugtes Manifest
   stories/    die einzelnen Videos (nur Daten)
+scripts/      Audio-Generator (Stimmen, Sounds, Musik)
 ```

@@ -11,7 +11,8 @@ import {
 } from "remotion";
 import { AudioCue, PreparedScene } from "./prepare";
 import { Actor } from "./Actor";
-import { Background } from "./Backgrounds";
+import { Background, INK } from "./Backgrounds";
+import { Props } from "../worlds/props";
 import { Effect, Grain, Vignette } from "./Effects";
 import { Theme } from "./themes";
 import { Caption } from "./types";
@@ -116,8 +117,12 @@ const Cue: React.FC<{ cue: AudioCue; name: string }> = ({ cue, name }) => {
 export const Scene: React.FC<{ scene: PreparedScene; theme: Theme }> = ({ scene, theme }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const { font } = useLayout();
+  const { font, W, H, groundY, unit } = useLayout();
   const t = frame / fps;
+  const time = scene.time ?? (theme.night ? "night" : "day");
+  const propCtx = { u: unit, frame, night: time === "night", ink: INK };
+  const back = (scene.props ?? []).filter((p) => !p.front);
+  const front = (scene.props ?? []).filter((p) => p.front);
 
   const zoom = scene.zoom
     ? interpolate(t, [0, scene.duration], scene.zoom, {
@@ -149,10 +154,20 @@ export const Scene: React.FC<{ scene: PreparedScene; theme: Theme }> = ({ scene,
           translate: `${shakeX}px ${shakeY}px`,
         }}
       >
-        <Background name={scene.background} theme={theme} />
+        <Background name={scene.background} theme={theme} time={time} />
+        {back.length ? (
+          <svg width={W} height={H} style={{ position: "absolute" }}>
+            <Props props={back} W={W} groundY={groundY} ctx={propCtx} />
+          </svg>
+        ) : null}
         {(scene.actors ?? []).map((a, i) => (
           <Actor key={a.id} actor={a} theme={theme} seed={i + 1} />
         ))}
+        {front.length ? (
+          <svg width={W} height={H} style={{ position: "absolute" }}>
+            <Props props={front} W={W} groundY={groundY} ctx={propCtx} />
+          </svg>
+        ) : null}
       </AbsoluteFill>
       {(scene.effects ?? []).map((e) => (
         <Effect key={e} name={e} theme={theme} words={scene.thoughts} />

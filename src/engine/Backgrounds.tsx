@@ -2,6 +2,7 @@ import React from "react";
 import { random, useCurrentFrame } from "remotion";
 import { Theme } from "./themes";
 import { BackgroundName } from "./types";
+import { TimeOfDay, WORLDS, WorldName } from "../worlds/worlds";
 import { useLayout } from "./layout";
 
 type P = { theme: Theme };
@@ -234,15 +235,22 @@ const Bus: React.FC<P> = ({ theme }) => {
   );
 };
 
-export const Background: React.FC<P & { name: BackgroundName }> = ({ name, theme }) => {
-  const { W, H } = useLayout();
+export const INK = "#22252b";
+
+export const Background: React.FC<P & { name: BackgroundName; time: TimeOfDay }> = ({ name, theme, time }) => {
+  const frame = useCurrentFrame();
+  const { W, H, groundY, unit } = useLayout();
+  if (name in WORLDS) {
+    const world = WORLDS[name as WorldName];
+    return (
+      <svg width={W} height={H} style={{ position: "absolute" }}>
+        {world.draw({ W, H, g: groundY, u: unit, frame, time, night: time === "night", c: world.palettes[time], ink: INK })}
+      </svg>
+    );
+  }
   return (
     <svg width={W} height={H} style={{ position: "absolute" }}>
-      {name === "void" ? (
-        <>
-          <Sky theme={theme} id="void" />
-        </>
-      ) : null}
+      {name === "void" ? <Sky theme={theme} id="void" /> : null}
       {name === "room" ? <Room theme={theme} /> : null}
       {name === "bedroom" ? <Room theme={theme} bed /> : null}
       {name === "street" ? <Street theme={theme} /> : null}

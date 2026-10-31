@@ -173,6 +173,56 @@ const Thoughts: React.FC<{ words: string[]; theme: Theme }> = ({ words, theme })
   );
 };
 
+
+// Teilchen, die fallen (Schnee, Konfetti) oder steigen (Blasen, Glut)
+const Particles: React.FC<{
+  n: number;
+  dir: 1 | -1;
+  speed: number;
+  draw: (i: number, x: number, y: number, frame: number) => React.ReactNode;
+  seed: string;
+}> = ({ n, dir, speed, draw, seed }) => {
+  const frame = useCurrentFrame();
+  const { W, H } = useLayout();
+  return (
+    <svg width={W} height={H} style={{ position: "absolute" }}>
+      {new Array(n).fill(0).map((_, i) => {
+        const sp = speed * (0.6 + random(`${seed}s${i}`) * 0.8);
+        const travel = (random(`${seed}y${i}`) * (H + 100) + frame * sp) % (H + 100);
+        const y = dir === 1 ? travel - 50 : H + 50 - travel;
+        const x = random(`${seed}x${i}`) * W + Math.sin(frame / 25 + i) * 25;
+        return <React.Fragment key={i}>{draw(i, x, y, frame)}</React.Fragment>;
+      })}
+    </svg>
+  );
+};
+
+const CONFETTI = ["#ff6b6b", "#ffd43b", "#51cf66", "#339af0", "#cc5de8", "#ff922b"];
+
+const Bats: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { W, H, font } = useLayout();
+  return (
+    <svg width={W} height={H} style={{ position: "absolute" }}>
+      {new Array(7).fill(0).map((_, i) => {
+        const sp = 4 + random(`bs${i}`) * 4;
+        const x = ((random(`bx${i}`) * W + frame * sp) % (W + 200)) - 100;
+        const y = H * (0.1 + random(`by${i}`) * 0.3) + Math.sin(frame / 8 + i) * 20;
+        const flap = Math.sin(frame / 2 + i) * 12;
+        const s = (1 + random(`bz${i}`)) * font * 1.5;
+        return (
+          <path
+            key={i}
+            transform={`translate(${x} ${y}) scale(${s})`}
+            d={`M 0 0 Q -10 ${-8 - flap} -24 ${-4 - flap} Q -16 2 -10 4 Q -5 2 0 6 Q 5 2 10 4 Q 16 2 24 ${-4 - flap} Q 10 ${-8 - flap} 0 0 Z`}
+            fill="#0b0b0f"
+          />
+        );
+      })}
+    </svg>
+  );
+};
+
 export const Effect: React.FC<{ name: EffectName; theme: Theme; words?: string[] }> = ({
   name,
   theme,
@@ -195,6 +245,32 @@ export const Effect: React.FC<{ name: EffectName; theme: Theme; words?: string[]
       return <RedPulse />;
     case "thoughts":
       return <Thoughts words={words ?? []} theme={theme} />;
+    case "snow":
+      return (
+        <Particles n={90} dir={1} speed={3} seed="sn" draw={(i, x, y) => <circle cx={x} cy={y} r={3 + (i % 4)} fill="#fff" opacity={0.85} />} />
+      );
+    case "bubbles":
+      return (
+        <Particles n={35} dir={-1} speed={4} seed="bu" draw={(i, x, y) => <circle cx={x} cy={y} r={5 + (i % 5) * 3} fill="none" stroke="#e7f5ff" strokeWidth={2.5} opacity={0.6} />} />
+      );
+    case "confetti":
+      return (
+        <Particles
+          n={80}
+          dir={1}
+          speed={7}
+          seed="co"
+          draw={(i, x, y, f) => (
+            <rect x={x} y={y} width={14} height={8} fill={CONFETTI[i % CONFETTI.length]} transform={`rotate(${(f * (5 + (i % 7)) + i * 40) % 360} ${x + 7} ${y + 4})`} />
+          )}
+        />
+      );
+    case "embers":
+      return (
+        <Particles n={45} dir={-1} speed={3.5} seed="em" draw={(i, x, y, f) => <circle cx={x} cy={y} r={2 + (i % 3)} fill={i % 2 ? "#ff922b" : "#ffd43b"} opacity={0.5 + 0.5 * Math.sin(f / 4 + i)} />} />
+      );
+    case "bats":
+      return <Bats />;
   }
 };
 

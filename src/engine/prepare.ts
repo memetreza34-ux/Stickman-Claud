@@ -48,6 +48,7 @@ export const prepareStory = (story: StoryDef): PreparedStory => {
 
     const actors = (scene.actors ?? []).map((actor) => ({
       ...actor,
+      look: actor.look ?? story.cast?.[actor.id],
       keys: actor.keys.map((k, i) => {
         const clip = k.say ? clips[sayKey(s, actor.id, i)] : undefined;
         if (!clip) return k;

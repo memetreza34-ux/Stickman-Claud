@@ -5,6 +5,10 @@ export const dasKlopfen: StoryDef = {
   title: "Das Klopfen",
   theme: "horror",
   format: "short",
+  cast: {
+    ich: { hair: "short", hairColor: "#3b2414", top: "hoodie", topColor: "#3b4252", bottom: "pants", bottomColor: "#1f2430" },
+    es: "monster",
+  },
   scenes: [
     {
       name: "Hook",

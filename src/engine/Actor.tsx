@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { animatePose, blendPose, PoseName } from "../stickman/poses";
 import { Emotion, HandItem, Stickman, STICKMAN_HEIGHT } from "../stickman/Stickman";
+import { resolveLook } from "../stickman/looks";
 import { Theme } from "./themes";
 import { ActorDef, Keyframe } from "./types";
 import { clamp, useLayout } from "./layout";
@@ -49,6 +50,7 @@ export const Actor: React.FC<{ actor: ActorDef; theme: Theme; seed: number }> = 
   const { W, H, groundY, unit, font } = useLayout();
   const t = frame / fps;
   const keys = React.useMemo(() => resolveKeys(actor.keys), [actor.keys]);
+  const look = React.useMemo(() => resolveLook(actor.look), [actor.look]);
 
   let i = 0;
   for (let j = 0; j < keys.length; j++) if (keys[j].at <= t) i = j;
@@ -82,7 +84,7 @@ export const Actor: React.FC<{ actor: ActorDef; theme: Theme; seed: number }> = 
   const y = prev ? interpolate(blendT, [0, 1], [prev.y, k.y]) : k.y;
 
   const blink = (frame + seed * 37) % 110 < 4;
-  const scale = unit * (actor.size ?? 1);
+  const scale = unit * (actor.size ?? 1) * (look.height ?? 1);
   const px = (x / 100) * W;
   const py = groundY - y * scale;
 
@@ -104,6 +106,7 @@ export const Actor: React.FC<{ actor: ActorDef; theme: Theme; seed: number }> = 
             emotion={k.emotion as Emotion}
             stroke={actor.color ?? theme.stroke}
             headFill={theme.headFill}
+            look={look}
             blink={blink}
             item={k.item as HandItem}
             t={t}
@@ -115,7 +118,7 @@ export const Actor: React.FC<{ actor: ActorDef; theme: Theme; seed: number }> = 
           style={{
             position: "absolute",
             left: px,
-            bottom: H - py + (STICKMAN_HEIGHT + 25) * scale,
+            bottom: H - py + (STICKMAN_HEIGHT + 25 + 48 * ((look.headSize ?? 1) - 1) + (look.hat && look.hat !== "none" ? 25 : 0)) * scale,
             translate: "-50% 0",
             scale: interpolate(t, [bubble.from, bubble.from + 0.25], [0.4, 1], {
               ...clamp,

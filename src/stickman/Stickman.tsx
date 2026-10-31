@@ -1,4 +1,6 @@
 import React from "react";
+import { Look } from "./looks";
+import { Beard, Glasses, HairBack, HairFront, Hat, MaskBand, MaskLower } from "./Outfit";
 import { Pose } from "./poses";
 
 export type Emotion =
@@ -226,15 +228,24 @@ const Item: React.FC<{ item: HandItem; at: Pt; angle: number; t: number }> = ({
   }
 };
 
+const DEFAULT_LOOK: Look = {};
+
 export const Stickman: React.FC<{
   pose: Pose;
   emotion: Emotion;
-  stroke: string;
-  headFill: string;
+  stroke: string; // Standard-Linienfarbe (vom Theme)
+  headFill: string; // Standard-Kopffarbe (vom Theme)
+  look?: Look;
   blink?: boolean;
   item?: HandItem;
   t?: number;
-}> = ({ pose, emotion, stroke, headFill, blink = false, item = "none", t = 0 }) => {
+}> = ({ pose, emotion, stroke: themeStroke, headFill, look = DEFAULT_LOOK, blink = false, item = "none", t = 0 }) => {
+  const stroke = look.color ?? themeStroke;
+  const skin = look.skin ?? headFill;
+  const lw = 7 * (look.lineWidth ?? 1);
+  const hs = look.headSize ?? 1;
+  const ghost = look.body === "ghost";
+
   // Lokale Koordinaten: Hüfte bei (0,0), y nach unten
   const hip: Pt = { x: 0, y: 0 };
   const kneeB = dir(hip, pose.legB[0], THIGH);
@@ -243,40 +254,216 @@ export const Stickman: React.FC<{
   const footF = dir(kneeF, pose.legF[0] + pose.legF[1], SHIN);
   const neck = dir(hip, 180 - pose.lean, TORSO);
   const shoulder = dir(neck, -pose.lean, 6);
-  const headC = dir(neck, 180 - pose.lean - pose.head * 0.3, HEAD_R + 4);
+  const headC = dir(neck, 180 - pose.lean - pose.head * 0.3, HEAD_R * hs + 4);
   const elbowB = dir(shoulder, pose.armB[0], UPPER_ARM);
   const handB = dir(elbowB, pose.armB[0] + pose.armB[1], FOREARM);
   const elbowF = dir(shoulder, pose.armF[0], UPPER_ARM);
   const handF = dir(elbowF, pose.armF[0] + pose.armF[1], FOREARM);
 
-  // Automatisch auf den Boden stellen
-  const lowest = Math.max(footB.y, footF.y, kneeB.y, kneeF.y);
-  const groundOffset = -lowest;
+  // Automatisch auf den Boden stellen (Geist schwebt)
+  const lowest = ghost ? THIGH + SHIN - 10 : Math.max(footB.y, footF.y, kneeB.y, kneeF.y);
+  const float = ghost ? Math.sin(t * 2.5) * 6 + 14 : 0;
+  const groundOffset = -lowest - float;
 
-  const line = (a: Pt, b: Pt, c: Pt) => `M ${a.x} ${a.y} L ${b.x} ${b.y} L ${c.x} ${c.y}`;
-  const st = {
-    stroke,
-    strokeWidth: 7,
-    fill: "none",
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
+  const line = (a: Pt, b: Pt, c?: Pt) => `M ${a.x} ${a.y} L ${b.x} ${b.y}${c ? ` L ${c.x} ${c.y}` : ""}`;
+  const st = { stroke, strokeWidth: lw, fill: "none", strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+
+  // Stoff: dicke Linie in Stoff-Farbe mit Umrandung
+  const cloth = (d: string, color: string, width: number, key?: string) => (
+    <g key={key}>
+      <path d={d} stroke={stroke} strokeWidth={width + 5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <path d={d} stroke={color} strokeWidth={width} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </g>
+  );
+
+  const top = look.top ?? "none";
+  const topColor = look.topColor ?? "#888";
+  const longSleeve = ["shirt", "hoodie", "suit", "labcoat", "robe", "armor"].includes(top);
+  const shortSleeve = top === "tshirt" || top === "dress";
+
+  const arm = (s: Pt, e: Pt, h: Pt, key: string) => {
+    if (ghost) return null;
+    if (longSleeve) {
+      const cuff = { x: e.x + (h.x - e.x) * 0.8, y: e.y + (h.y - e.y) * 0.8 };
+      return (
+        <g key={key}>
+          <path d={line(cuff, h)} {...st} />
+          {cloth(line(s, e, cuff), topColor, 13)}
+        </g>
+      );
+    }
+    if (shortSleeve) {
+      const mid = { x: s.x + (e.x - s.x) * 0.55, y: s.y + (e.y - s.y) * 0.55 };
+      return (
+        <g key={key}>
+          <path d={line(s, e, h)} {...st} />
+          {cloth(line(s, mid), topColor, 14)}
+        </g>
+      );
+    }
+    return <path key={key} d={line(s, e, h)} {...st} />;
   };
+
+  const bottom = look.bottom ?? "none";
+  const bottomColor = look.bottomColor ?? "#444";
+  const leg = (k: Pt, f: Pt, key: string) => {
+    if (ghost) return null;
+    if (bottom === "pants") return cloth(line(hip, k, f), bottomColor, 13, key);
+    if (bottom === "shorts") {
+      const mid = { x: k.x + (f.x - k.x) * 0.1, y: k.y + (f.y - k.y) * 0.1 };
+      return (
+        <g key={key}>
+          <path d={line(hip, k, f)} {...st} />
+          {cloth(line(hip, mid), bottomColor, 15)}
+        </g>
+      );
+    }
+    return <path key={key} d={line(hip, k, f)} {...st} />;
+  };
+
+  const torsoRot = `rotate(${pose.lean})`;
+  const wave = Math.sin(t * 4) * 6;
+
+  // Körper-Silhouetten im Torso-Koordinatensystem (Hüfte 0,0, Hals 0,-62)
+  const longCoat = top === "labcoat" ? 48 : top === "robe" ? 90 : top === "dress" ? 42 : 0;
+  const coat = longCoat ? (
+    <g transform={torsoRot}>
+      <path
+        d={`M -11 -58 L 11 -58 L ${top === "dress" ? 9 : 13} -18 L ${top === "robe" ? 30 : 26} ${longCoat} Q 0 ${longCoat + 6} ${top === "robe" ? -30 : -26} ${longCoat} L ${top === "dress" ? -9 : -13} -18 Z`}
+        fill={topColor}
+        stroke={stroke}
+        strokeWidth={3}
+        strokeLinejoin="round"
+      />
+      {top === "labcoat" ? <line x1={0} y1={-56} x2={0} y2={longCoat - 2} stroke={stroke} strokeWidth={2} /> : null}
+    </g>
+  ) : null;
+
+  const skirt =
+    bottom === "skirt" && !longCoat ? (
+      <path d={`M -11 -6 L 11 -6 L 24 34 Q 0 40 -24 34 Z`} fill={bottomColor} stroke={stroke} strokeWidth={3} strokeLinejoin="round" />
+    ) : null;
+
+  const torso = ghost ? null : top !== "none" && !longCoat ? (
+    <g>
+      {cloth(line(hip, neck), topColor, 24)}
+      <g transform={torsoRot}>
+        {top === "suit" ? <polygon points="-6,-58 6,-58 0,-38" fill="#fff" /> : null}
+        {top === "hoodie" ? <path d="M -8 -30 L 8 -30 L 7 -16 L -7 -16 Z" fill="none" stroke={stroke} strokeWidth={2} /> : null}
+        {top === "armor" ? <path d="M -10 -50 Q 0 -40 10 -50 M -10 -36 Q 0 -26 10 -36" stroke={stroke} strokeWidth={2} fill="none" /> : null}
+      </g>
+    </g>
+  ) : (
+    <path d={line(hip, neck)} {...st} />
+  );
+
+  const extraColor = look.extraColor ?? "#c92a2a";
+  const extraBack =
+    look.extra === "backpack" ? (
+      <g transform={torsoRot}>
+        <rect x={-30} y={-56} width={22} height={38} rx={7} fill={extraColor} stroke={stroke} strokeWidth={3} />
+      </g>
+    ) : look.extra === "wings" ? (
+      <g transform={torsoRot}>
+        {[0, 1].map((k) => (
+          <ellipse
+            key={k}
+            cx={-26 - k * 6}
+            cy={-58 + k * 4}
+            rx={30}
+            ry={12 + Math.sin(t * 8 + k) * 4}
+            transform={`rotate(${-30 - k * 15} ${-8} -52)`}
+            fill={extraColor}
+            stroke={stroke}
+            strokeWidth={2.5}
+          />
+        ))}
+      </g>
+    ) : look.extra === "tail" ? (
+      <g>
+        <path d={`M -2 -2 Q -34 ${10 + wave} -30 ${-24 + wave}`} stroke={extraColor} strokeWidth={5} fill="none" strokeLinecap="round" />
+        <polygon points={`-30,${-34 + wave} -38,${-20 + wave} -22,${-22 + wave}`} fill={extraColor} />
+      </g>
+    ) : null;
+
+  const extraFront =
+    look.extra === "tie" ? (
+      <g transform={torsoRot}>
+        <polygon points="-3,-56 3,-56 5,-28 0,-22 -5,-28" fill={extraColor} />
+      </g>
+    ) : look.extra === "bowtie" ? (
+      <g transform={torsoRot}>
+        <polygon points="-9,-60 0,-56 -9,-52" fill={extraColor} />
+        <polygon points="9,-60 0,-56 9,-52" fill={extraColor} />
+      </g>
+    ) : look.extra === "scarf" ? (
+      <g transform={torsoRot}>
+        <path d={`M -10 -58 Q 0 -52 12 -58`} stroke={extraColor} strokeWidth={9} fill="none" strokeLinecap="round" />
+        <path d={`M -8 -56 Q ${-22 + wave} -44 ${-30 + wave} -34`} stroke={extraColor} strokeWidth={7} fill="none" strokeLinecap="round" />
+      </g>
+    ) : null;
+
+  const cape = look.cape ? (
+    <g transform={torsoRot}>
+      <path
+        d={`M -4 -60 L 6 -60 Q 4 0 -6 56 Q ${-30 + wave} ${62} ${-48 + wave} 52 Q -24 0 -4 -60 Z`}
+        fill={look.cape}
+        stroke={stroke}
+        strokeWidth={3}
+        strokeLinejoin="round"
+      />
+    </g>
+  ) : null;
+
+  const ghostSheet = ghost ? (
+    <path
+      d={`M ${headC.x - 24 * hs} ${headC.y} L ${-26} ${THIGH + 10} ${[0, 1, 2, 3].map((k) => `Q ${-19.5 + k * 13} ${THIGH + 22 + Math.sin(t * 6 + k) * 5} ${-13 + k * 13} ${THIGH + 10}`).join(" ")} L ${headC.x + 24 * hs} ${headC.y} Z`}
+      fill={skin}
+      fillOpacity={0.9}
+      stroke={stroke}
+      strokeWidth={4}
+      strokeLinejoin="round"
+    />
+  ) : null;
+
+  const shape = look.head ?? "round";
+  const headShape =
+    shape === "square" ? (
+      <rect x={-HEAD_R} y={-HEAD_R} width={HEAD_R * 2} height={HEAD_R * 2} rx={8} fill={skin} stroke={stroke} strokeWidth={6} />
+    ) : shape === "oval" ? (
+      <ellipse rx={HEAD_R * 0.9} ry={HEAD_R * 1.15} fill={skin} stroke={stroke} strokeWidth={6} />
+    ) : (
+      <circle r={HEAD_R} fill={skin} stroke={stroke} strokeWidth={ghost ? 4 : 6} />
+    );
 
   return (
     <g transform={`translate(0 ${groundOffset - pose.lift})`}>
       <g transform={`rotate(${pose.rotate})`}>
-        <path d={line(hip, kneeB, footB)} {...st} />
-        <path d={line(shoulder, elbowB, handB)} {...st} />
-        <path d={`M ${hip.x} ${hip.y} L ${neck.x} ${neck.y}`} {...st} />
-        <path d={line(hip, kneeF, footF)} {...st} />
+        {cape}
+        {extraBack}
+        {leg(kneeB, footB, "legB")}
+        {arm(shoulder, elbowB, handB, "armB")}
+        {torso}
+        {leg(kneeF, footF, "legF")}
+        {skirt}
+        {coat}
+        {ghostSheet}
+        {extraFront}
         <g transform={`rotate(${pose.lean + pose.head} ${headC.x} ${headC.y})`}>
-          <circle cx={headC.x} cy={headC.y} r={HEAD_R} fill={headFill} stroke={stroke} strokeWidth={6} />
-          <g transform={`translate(${headC.x} ${headC.y})`}>
-            <Face emotion={emotion} blink={blink} stroke={stroke} t={t} />
+          <g transform={`translate(${headC.x} ${headC.y}) scale(${hs})`}>
+            <HairBack look={look} />
+            {headShape}
+            <MaskBand look={look} />
+            <Face emotion={emotion} blink={blink} stroke={look.mask && look.hat !== "hood" ? "#fff" : stroke} t={t} />
+            <MaskLower look={look} />
+            <Beard look={look} />
+            <Glasses look={look} stroke={stroke} />
+            {look.hat === "helmet" || look.hat === "hood" ? null : <HairFront look={look} t={t} stroke={stroke} />}
+            <Hat look={look} t={t} />
           </g>
         </g>
-        <path d={line(shoulder, elbowF, handF)} {...st} />
-        <Item item={item} at={handF} angle={pose.armF[0] + pose.armF[1]} t={t} />
+        {arm(shoulder, elbowF, handF, "armF")}
+        {ghost ? null : <Item item={item} at={handF} angle={pose.armF[0] + pose.armF[1]} t={t} />}
       </g>
     </g>
   );

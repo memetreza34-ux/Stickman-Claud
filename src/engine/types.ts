@@ -2,7 +2,11 @@ import type { MusicName, SfxName, VoiceRole } from "../audio/sounds";
 import type { Emotion, HandItem } from "../stickman/Stickman";
 import type { PoseName } from "../stickman/poses";
 import type { ThemeName } from "./themes";
+import type { Look, LookName } from "../stickman/looks";
+import type { PropDef } from "../worlds/props";
+import type { TimeOfDay, WorldName } from "../worlds/worlds";
 
+// Stimmungs-Räume (Farben vom Theme) + alle Welten aus src/worlds/worlds.tsx
 export type BackgroundName =
   | "void"
   | "room"
@@ -10,7 +14,8 @@ export type BackgroundName =
   | "street"
   | "forest"
   | "park"
-  | "bus";
+  | "bus"
+  | WorldName;
 
 export type EffectName =
   | "rain"
@@ -20,7 +25,12 @@ export type EffectName =
   | "hearts"
   | "redPulse"
   | "sparkles"
-  | "thoughts";
+  | "thoughts"
+  | "snow"
+  | "bubbles"
+  | "bats"
+  | "confetti"
+  | "embers";
 
 // Ein Schlüsselbild: ab Sekunde `at` gilt diese Pose/Emotion.
 // x (0–100 % der Breite) bewegt sich linear zum nächsten Keyframe.
@@ -41,6 +51,7 @@ export type ActorDef = {
   id: string;
   color?: string;
   size?: number;
+  look?: LookName | Look; // Aussehen (sonst aus story.cast oder klassisch)
   voice?: VoiceRole; // Stimme für Sprechblasen
   keys: Keyframe[];
 };
@@ -54,6 +65,8 @@ export type SceneDef = {
   name: string;
   duration: number; // Sekunden
   background: BackgroundName;
+  time?: TimeOfDay; // Tag / Nacht / Sonnenuntergang (Standard: nach Theme)
+  props?: PropDef[]; // zusätzliche Requisiten
   title?: string; // großer Text in der Mitte (Hook / Titelkarte)
   captions?: Caption[];
   actors?: ActorDef[];
@@ -71,6 +84,7 @@ export type StoryDef = {
   theme: ThemeName;
   format: "short" | "long";
   narrator?: VoiceRole; // Standard: "erzaehler"
+  cast?: Record<string, LookName | Look>; // Aussehen pro Figuren-id, gilt in allen Szenen
   music?: MusicName | "none"; // Standard: passend zum Theme
   scenes: SceneDef[];
 };

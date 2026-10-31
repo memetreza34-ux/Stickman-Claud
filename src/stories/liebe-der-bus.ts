@@ -1,13 +1,11 @@
 import { StoryDef } from "../engine/types";
 
-const ER = "#2b4c9b";
-const SIE = "#c2255c";
-
 export const derBus: StoryDef = {
   id: "Liebe-DerBus",
   title: "Der Bus",
   theme: "liebe",
   format: "short",
+  cast: { er: "held", sie: "heldin" },
   scenes: [
     {
       name: "Hook",
@@ -25,7 +23,6 @@ export const derBus: StoryDef = {
       actors: [
         {
           id: "er",
-          color: ER,
           voice: "mann",
           keys: [
             { at: 0, x: 22, pose: "sit", emotion: "neutral", facing: "right" },
@@ -35,7 +32,6 @@ export const derBus: StoryDef = {
         },
         {
           id: "sie",
-          color: SIE,
           voice: "frau",
           keys: [{ at: 0, x: 78, pose: "sit", emotion: "neutral", facing: "left" }],
         },
@@ -53,7 +49,6 @@ export const derBus: StoryDef = {
       actors: [
         {
           id: "er",
-          color: ER,
           voice: "mann",
           keys: [{ at: 0, x: 22, pose: "sitSad", emotion: "sad", facing: "right" }],
         },
@@ -68,7 +63,6 @@ export const derBus: StoryDef = {
       actors: [
         {
           id: "er",
-          color: ER,
           voice: "mann",
           keys: [
             { at: 0, x: 5, pose: "walk", emotion: "sad" },
@@ -78,7 +72,6 @@ export const derBus: StoryDef = {
         },
         {
           id: "sie",
-          color: SIE,
           voice: "frau",
           keys: [
             { at: 0, x: 70, pose: "stand", emotion: "neutral", facing: "left" },
@@ -97,13 +90,11 @@ export const derBus: StoryDef = {
       actors: [
         {
           id: "er",
-          color: ER,
           voice: "mann",
           keys: [{ at: 0, x: 45, pose: "holdHand", emotion: "love", item: "flower" }],
         },
         {
           id: "sie",
-          color: SIE,
           voice: "frau",
           keys: [{ at: 0, x: 58, pose: "holdHand", emotion: "love", facing: "left" }],
         },
