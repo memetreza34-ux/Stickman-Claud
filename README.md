@@ -11,6 +11,25 @@ npm run dev        # Remotion Studio (Vorschau)
 npx remotion render Horror-DasKlopfen out/klopfen.mp4
 ```
 
+## Ton (Stimme, Sounds, Musik)
+
+```bash
+npm run audio            # erzeugt nur was fehlt oder sich geändert hat
+npm run audio -- --force # alles neu
+```
+
+- **Stimme:** Untertitel liest der Erzähler, Sprechblasen die Figur (`voice` am Actor).
+  Ohne Key: kostenlose macOS-Stimmen. Mit `ELEVENLABS_API_KEY=...` in `.env`: ElevenLabs.
+  Stimmen ändern: `scripts/voices.config.ts`.
+- **Timing passt sich an:** Ist ein Satz länger, rücken Untertitel nach und die Szene wird länger.
+- **Sounds:** `sfx: [{ at: 3, sound: "knock" }]` in einer Szene.
+  Verfügbar: knock, thunder, heartbeat, whoosh, stinger, boom, creak, ding, pop, chime.
+  Effekt `rain` bringt Regen-Geräusch, `lightning` Donner automatisch mit.
+- **Musik:** passend zum Theme (horror, calm, love), wird leiser, wenn jemand spricht.
+  Ändern mit `music: "calm"` oder `music: "none"` in der Story.
+
+Nach jeder Text-Änderung in einer Story: `npm run audio` laufen lassen.
+
 ## Neue Story
 
 1. Datei in `src/stories/` anlegen (Vorlage: eine der bestehenden Storys kopieren).

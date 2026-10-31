@@ -21,12 +21,14 @@ export const spotlightEffekt: StoryDef = {
       duration: 3.5,
       background: "void",
       title: "Warum du denkst,\ndass ALLE\ndich anschauen",
+      sfx: [{ at: 0, sound: "whoosh" }],
     },
     {
       name: "Stolpern",
       duration: 5,
       background: "street",
       shake: [2.2],
+      sfx: [{ at: 2.15, sound: "boom", volume: 0.6 }],
       actors: [
         {
           id: "du",
@@ -48,6 +50,7 @@ export const spotlightEffekt: StoryDef = {
       background: "void",
       zoom: [1, 1.15],
       effects: ["thoughts"],
+      sfx: [{ at: 0, sound: "whoosh" }, { at: 0.5, sound: "heartbeat", volume: 0.5 }, { at: 1.4, sound: "heartbeat", volume: 0.5 }],
       thoughts: ["Peinlich!", "Alle lachen", "Hat jeder gesehen", "Wie dumm", "Oh nein"],
       actors: [
         { id: "du", keys: [{ at: 0, x: 50, pose: "holdHead", emotion: "crying" }] },
@@ -58,6 +61,7 @@ export const spotlightEffekt: StoryDef = {
     {
       name: "Realität",
       duration: 5,
+      sfx: [{ at: 0, sound: "pop" }],
       background: "street",
       actors: [
         { id: "du", keys: [{ at: 0, x: 45, pose: "shrug", emotion: "thinking" }] },
@@ -73,6 +77,7 @@ export const spotlightEffekt: StoryDef = {
     {
       name: "Erklärung",
       duration: 6,
+      sfx: [{ at: 0.2, sound: "ding" }],
       background: "void",
       actors: [{ id: "du", keys: [{ at: 0, x: 50, pose: "point", emotion: "happy" }] }],
       captions: [
@@ -85,6 +90,7 @@ export const spotlightEffekt: StoryDef = {
       duration: 3.5,
       background: "park",
       effects: ["sparkles"],
+      sfx: [{ at: 0, sound: "chime" }],
       actors: [{ id: "du", keys: [{ at: 0, x: 30, pose: "wave", emotion: "happy" }] }],
       captions: [{ at: 0.3, text: "Also: Atme durch. Niemand schaut so genau hin." }],
     },

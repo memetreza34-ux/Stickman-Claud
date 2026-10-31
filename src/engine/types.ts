@@ -1,3 +1,4 @@
+import type { MusicName, SfxName, VoiceRole } from "../audio/sounds";
 import type { Emotion, HandItem } from "../stickman/Stickman";
 import type { PoseName } from "../stickman/poses";
 import type { ThemeName } from "./themes";
@@ -40,10 +41,14 @@ export type ActorDef = {
   id: string;
   color?: string;
   size?: number;
+  voice?: VoiceRole; // Stimme für Sprechblasen
   keys: Keyframe[];
 };
 
-export type Caption = { at: number; text: string; dur?: number };
+// voice: false = nicht vorlesen
+export type Caption = { at: number; text: string; dur?: number; voice?: VoiceRole | false };
+
+export type SfxCue = { at: number; sound: SfxName; volume?: number };
 
 export type SceneDef = {
   name: string;
@@ -57,6 +62,7 @@ export type SceneDef = {
   zoom?: [number, number]; // Kamera-Zoom von → bis
   focus?: [number, number]; // Zoom-Mittelpunkt in % (x, y)
   thoughts?: string[]; // Wörter für den "thoughts"-Effekt
+  sfx?: SfxCue[];
 };
 
 export type StoryDef = {
@@ -64,5 +70,7 @@ export type StoryDef = {
   title: string;
   theme: ThemeName;
   format: "short" | "long";
+  narrator?: VoiceRole; // Standard: "erzaehler"
+  music?: MusicName | "none"; // Standard: passend zum Theme
   scenes: SceneDef[];
 };

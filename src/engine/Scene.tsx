@@ -1,10 +1,20 @@
 import React from "react";
-import { AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
+import { Audio } from "@remotion/media";
+import {
+  AbsoluteFill,
+  Easing,
+  interpolate,
+  Sequence,
+  staticFile,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
+import { AudioCue, PreparedScene } from "./prepare";
 import { Actor } from "./Actor";
 import { Background } from "./Backgrounds";
 import { Effect, Grain, Vignette } from "./Effects";
 import { Theme } from "./themes";
-import { Caption, SceneDef } from "./types";
+import { Caption } from "./types";
 import { clamp, useLayout } from "./layout";
 
 const CaptionText: React.FC<{ caption: Caption; end: number; theme: Theme }> = ({
@@ -94,7 +104,16 @@ const Title: React.FC<{ text: string; theme: Theme }> = ({ text, theme }) => {
   );
 };
 
-export const Scene: React.FC<{ scene: SceneDef; theme: Theme }> = ({ scene, theme }) => {
+const Cue: React.FC<{ cue: AudioCue; name: string }> = ({ cue, name }) => {
+  const { fps } = useVideoConfig();
+  return (
+    <Sequence from={Math.round(cue.at * fps)} layout="none" name={name}>
+      <Audio src={staticFile(cue.file)} volume={cue.volume} loop={cue.loop} />
+    </Sequence>
+  );
+};
+
+export const Scene: React.FC<{ scene: PreparedScene; theme: Theme }> = ({ scene, theme }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const { font } = useLayout();
@@ -148,6 +167,12 @@ export const Scene: React.FC<{ scene: SceneDef; theme: Theme }> = ({ scene, them
           end={c.dur ? c.at + c.dur : (captions[i + 1]?.at ?? scene.duration)}
           theme={theme}
         />
+      ))}
+      {scene.voice.map((c, i) => (
+        <Cue key={`v${i}`} cue={c} name="Stimme" />
+      ))}
+      {scene.sounds.map((c, i) => (
+        <Cue key={`s${i}`} cue={c} name={c.file.replace(/^sfx\/|\.wav$/g, "")} />
       ))}
     </AbsoluteFill>
   );

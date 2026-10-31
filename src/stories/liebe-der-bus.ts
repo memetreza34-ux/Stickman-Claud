@@ -15,15 +15,18 @@ export const derBus: StoryDef = {
       background: "void",
       title: "Jeden Tag\nderselbe Bus.\nDieselbe Person.",
       effects: ["hearts"],
+      sfx: [{ at: 0, sound: "chime" }],
     },
     {
       name: "Blicke",
       duration: 6,
+      sfx: [{ at: 2, sound: "pop" }],
       background: "bus",
       actors: [
         {
           id: "er",
           color: ER,
+          voice: "mann",
           keys: [
             { at: 0, x: 22, pose: "sit", emotion: "neutral", facing: "right" },
             { at: 2, emotion: "love" },
@@ -33,6 +36,7 @@ export const derBus: StoryDef = {
         {
           id: "sie",
           color: SIE,
+          voice: "frau",
           keys: [{ at: 0, x: 78, pose: "sit", emotion: "neutral", facing: "left" }],
         },
       ],
@@ -50,6 +54,7 @@ export const derBus: StoryDef = {
         {
           id: "er",
           color: ER,
+          voice: "mann",
           keys: [{ at: 0, x: 22, pose: "sitSad", emotion: "sad", facing: "right" }],
         },
       ],
@@ -58,11 +63,13 @@ export const derBus: StoryDef = {
     {
       name: "Park",
       duration: 7,
+      sfx: [{ at: 2.5, sound: "ding", volume: 0.5 }],
       background: "park",
       actors: [
         {
           id: "er",
           color: ER,
+          voice: "mann",
           keys: [
             { at: 0, x: 5, pose: "walk", emotion: "sad" },
             { at: 2.5, x: 38, pose: "stand", emotion: "shocked" },
@@ -72,6 +79,7 @@ export const derBus: StoryDef = {
         {
           id: "sie",
           color: SIE,
+          voice: "frau",
           keys: [
             { at: 0, x: 70, pose: "stand", emotion: "neutral", facing: "left" },
             { at: 2.5, emotion: "happy", pose: "point", say: "Du bist doch der aus dem Bus!", sayFor: 2.4 },
@@ -85,15 +93,18 @@ export const derBus: StoryDef = {
       duration: 4.5,
       background: "park",
       effects: ["hearts"],
+      sfx: [{ at: 0, sound: "chime" }],
       actors: [
         {
           id: "er",
           color: ER,
+          voice: "mann",
           keys: [{ at: 0, x: 45, pose: "holdHand", emotion: "love", item: "flower" }],
         },
         {
           id: "sie",
           color: SIE,
+          voice: "frau",
           keys: [{ at: 0, x: 58, pose: "holdHand", emotion: "love", facing: "left" }],
         },
       ],

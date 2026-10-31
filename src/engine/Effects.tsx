@@ -26,11 +26,23 @@ const Flicker: React.FC = () => {
   return <AbsoluteFill style={{ backgroundColor: "#000", opacity }} />;
 };
 
+const LIGHTNING_WINDOW = 75;
+const lightningOffset = (w: number) => Math.floor(random(`lw${w}`) * 60);
+
+// Frames, in denen ein Blitz beginnt (auch für den Donner-Sound)
+export const lightningFlashes = (durationInFrames: number) => {
+  const out: number[] = [];
+  for (let w = 0; w * LIGHTNING_WINDOW < durationInFrames; w++) {
+    const f = w * LIGHTNING_WINDOW + lightningOffset(w);
+    if (f < durationInFrames) out.push(f);
+  }
+  return out;
+};
+
 const Lightning: React.FC = () => {
   const frame = useCurrentFrame();
-  const window = Math.floor(frame / 75);
-  const offset = Math.floor(random(`lw${window}`) * 60);
-  const local = (frame % 75) - offset;
+  const window = Math.floor(frame / LIGHTNING_WINDOW);
+  const local = (frame % LIGHTNING_WINDOW) - lightningOffset(window);
   const opacity = local === 0 || local === 3 ? 0.85 : local === 1 || local === 4 ? 0.4 : 0;
   return <AbsoluteFill style={{ backgroundColor: "#dfe8ff", opacity }} />;
 };

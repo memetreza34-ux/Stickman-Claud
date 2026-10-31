@@ -12,6 +12,7 @@ export const dasKlopfen: StoryDef = {
       background: "void",
       title: "Es klopfte\num 3:07 Uhr.",
       effects: ["flicker"],
+      sfx: [{ at: 0, sound: "stinger" }],
     },
     {
       name: "Bett",
@@ -19,6 +20,12 @@ export const dasKlopfen: StoryDef = {
       background: "bedroom",
       effects: ["rain", "lightning"],
       shake: [3, 3.5, 4],
+      sfx: [
+        { at: 3, sound: "knock", volume: 0.75 },
+        { at: 3.5, sound: "knock", volume: 0.75 },
+        { at: 4, sound: "knock", volume: 0.75 },
+        { at: 4.4, sound: "heartbeat" },
+      ],
       actors: [
         {
           id: "ich",
@@ -39,6 +46,12 @@ export const dasKlopfen: StoryDef = {
       duration: 6,
       background: "room",
       effects: ["flicker", "fog"],
+      sfx: [
+        { at: 0.5, sound: "creak", volume: 0.5 },
+        { at: 2, sound: "heartbeat", volume: 0.6 },
+        { at: 3, sound: "heartbeat", volume: 0.7 },
+        { at: 3.4, sound: "knock", volume: 0.75 },
+      ],
       actors: [
         {
           id: "ich",
@@ -60,6 +73,7 @@ export const dasKlopfen: StoryDef = {
       zoom: [1, 1.9],
       focus: [55, 48],
       effects: ["redPulse"],
+      sfx: [0, 0.8, 1.6, 2.4, 3.2].map((at) => ({ at, sound: "heartbeat" as const })),
       actors: [
         {
           id: "ich",
@@ -73,6 +87,7 @@ export const dasKlopfen: StoryDef = {
       duration: 4,
       background: "void",
       shake: [1.5],
+      sfx: [{ at: 1.5, sound: "stinger", volume: 1 }],
       effects: ["flicker"],
       actors: [
         {
@@ -82,6 +97,7 @@ export const dasKlopfen: StoryDef = {
         {
           id: "es",
           color: "#c4161c",
+          voice: "monster",
           size: 1.25,
           keys: [
             { at: 0, x: 72, hidden: true },
@@ -89,7 +105,7 @@ export const dasKlopfen: StoryDef = {
           ],
         },
       ],
-      captions: [{ at: 1.5, text: "„Du hast mich gehört, oder?“" }],
+      captions: [{ at: 1.5, text: "„Du hast mich gehört, oder?“", voice: "monster" }],
     },
   ],
 };

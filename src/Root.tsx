@@ -1,5 +1,6 @@
 import { Composition, Folder } from "remotion";
 import { FORMATS, FPS, storyDuration, StoryVideo } from "./engine/StoryVideo";
+import { prepareStory } from "./engine/prepare";
 import { STORIES } from "./stories";
 import { PosesPreview } from "./stickman/PosesPreview";
 
@@ -7,7 +8,7 @@ export const RemotionRoot: React.FC = () => {
   return (
     <>
       <Folder name="Stories">
-        {STORIES.map((story) => (
+        {STORIES.map(prepareStory).map((story) => (
           <Composition
             key={story.id}
             id={story.id}
